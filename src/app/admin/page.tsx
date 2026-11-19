@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import { Sidebar, ActiveTab } from '@/components/Sidebar';
 import { Header } from '@/components/Header';
 import { DashboardView } from '@/components/DashboardView';
@@ -42,9 +44,16 @@ import {
   initialDashboardStats,
   initialServices
 } from '@/lib/store';
-import { Check } from 'lucide-react';
+import { Check, Lock, Eye, EyeOff, ArrowRight, ArrowLeft } from 'lucide-react';
 
 export default function AdminDashboardPage() {
+  // Authentication Gate State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -99,8 +108,72 @@ export default function AdminDashboardPage() {
     onConfirm: () => {}
   });
 
+  // Check existing session
+  useEffect(() => {
+    const hasLocalAuth = typeof window !== 'undefined' && (
+      localStorage.getItem('excorto_admin_auth') === 'authenticated' ||
+      sessionStorage.getItem('excorto_admin_auth') === 'authenticated' ||
+      document.cookie.includes('excorto_admin_auth=authenticated')
+    );
+    setIsAuthenticated(!!hasLocalAuth);
+  }, []);
+
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setAuthError(null);
+    setIsAuthenticating(true);
+
+    try {
+      const res = await fetch('/api/admin/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: passwordInput.trim() }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        localStorage.setItem('excorto_admin_auth', 'authenticated');
+        sessionStorage.setItem('excorto_admin_auth', 'authenticated');
+        setIsAuthenticated(true);
+        setPasswordInput('');
+        setAuthError(null);
+        showToast('Welcome to Excorto Studio Portal');
+      } else {
+        setAuthError('Incorrect password. Please verify and try again.');
+      }
+    } catch {
+      // Direct client check fallback
+      if (passwordInput.trim() === 'Excorto@2026') {
+        localStorage.setItem('excorto_admin_auth', 'authenticated');
+        sessionStorage.setItem('excorto_admin_auth', 'authenticated');
+        setIsAuthenticated(true);
+        setPasswordInput('');
+        setAuthError(null);
+        showToast('Welcome to Excorto Studio Portal');
+      } else {
+        setAuthError('Incorrect password. Please verify and try again.');
+      }
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await fetch('/api/admin/auth', { method: 'DELETE' });
+    } catch {}
+    localStorage.removeItem('excorto_admin_auth');
+    sessionStorage.removeItem('excorto_admin_auth');
+    document.cookie = 'excorto_admin_auth=; path=/; max-age=0;';
+    setIsAuthenticated(false);
+    setPasswordInput('');
+    setAuthError(null);
+  };
+
   // Fetch initial data
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     const loadInitialData = async () => {
       try {
         const [statsRes, projRes, blogRes, testRes, enqRes, setRes, newsRes, servRes] = await Promise.allSettled([
@@ -144,7 +217,7 @@ export default function AdminDashboardPage() {
     };
 
     loadInitialData();
-  }, []);
+  }, [isAuthenticated]);
 
   const refreshStats = (currentProj: Project[], currentBlogs: BlogPost[], currentEnq: Enquiry[], currentTest: Testimonial[]) => {
     const totalProj = currentProj.length;
@@ -617,6 +690,123 @@ export default function AdminDashboardPage() {
 
   const newEnquiriesCount = enquiries.filter(e => e.status === 'New').length;
 
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen w-full bg-[#F7F4EE] flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#344637] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen w-full bg-[#F7F4EE] flex flex-col items-center justify-center p-4 sm:p-6 select-none relative overflow-hidden">
+        {/* Subtle architectural ambient background glow */}
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-[#EAE2D5] blur-3xl opacity-60 pointer-events-none" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-[#EFE8DC] blur-3xl opacity-60 pointer-events-none" />
+
+        <div className="relative z-10 w-full max-w-[420px] bg-[#FCFAF6] rounded-2xl border border-[#E2DDD4] shadow-[0_12px_40px_rgba(40,32,24,0.07)] p-8 sm:p-10 flex flex-col items-center">
+          {/* Logo */}
+          <div className="mb-6 flex items-center justify-center">
+            <Image
+              src="/images/excorto-logo.png"
+              alt="Excorto Builders & Interiors"
+              width={220}
+              height={52}
+              priority
+              unoptimized
+              style={{ width: 'auto' }}
+              className="h-[42px] sm:h-[46px] w-auto object-contain"
+            />
+          </div>
+
+          {/* Eyebrow */}
+          <span className="text-[11px] font-semibold tracking-[0.24em] uppercase text-[#8F5E3B] mb-2 px-3 py-1 bg-[#F5EDE2] rounded-full">
+            Studio Portal
+          </span>
+
+          {/* Heading */}
+          <h1 className="font-serif text-[26px] sm:text-[28px] font-medium text-[#161B18] text-center tracking-[-0.015em] mb-2">
+            Admin Access
+          </h1>
+
+          <p className="font-sans text-[13px] text-[#656B66] text-center mb-6 leading-relaxed">
+            Enter the administrative key to access the content management system and studio operations.
+          </p>
+
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="w-full space-y-4">
+            <div>
+              <label className="block text-[12px] font-semibold tracking-wider text-[#333A36] uppercase mb-2">
+                Access Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#8A857D]">
+                  <Lock size={16} />
+                </div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={passwordInput}
+                  onChange={(e) => {
+                    setPasswordInput(e.target.value);
+                    if (authError) setAuthError(null);
+                  }}
+                  placeholder="Enter admin password"
+                  autoFocus
+                  required
+                  className="w-full pl-10 pr-11 py-3 text-[14px] bg-[#F7F4EE] border border-[#DDD5C9] rounded-xl text-[#161B18] placeholder-[#9E988F] focus:outline-none focus:border-[#344637] focus:ring-2 focus:ring-[#344637]/15 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#8A857D] hover:text-[#161B18] transition-colors cursor-pointer"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {authError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-[12.5px] leading-snug">
+                {authError}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isAuthenticating || !passwordInput.trim()}
+              className="w-full mt-2 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#344637] text-white hover:bg-[#253328] disabled:opacity-50 disabled:cursor-not-allowed text-[13px] font-bold tracking-[0.08em] uppercase transition-all duration-300 shadow-[0_4px_14px_rgba(52,70,55,0.22)] active:scale-[0.98] cursor-pointer"
+            >
+              {isAuthenticating ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <span>Verifying...</span>
+                </>
+              ) : (
+                <>
+                  <span>Unlock Portal</span>
+                  <ArrowRight size={15} />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Return link */}
+          <div className="mt-6 pt-5 border-t border-[#EAE4D9] w-full text-center">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-[12.5px] text-[#787167] hover:text-[#161B18] transition-colors"
+            >
+              <ArrowLeft size={13} />
+              <span>Return to Public Website</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex bg-[#F5F1E9] dark:bg-[#24241F] transition-colors">
       {/* Slim Sidebar Navigation */}
@@ -645,6 +835,7 @@ export default function AdminDashboardPage() {
             setSelectedEnquiry(enq);
           }}
           setActiveTab={setActiveTab}
+          onSignOut={handleSignOut}
         />
 
         {/* Studio Content Body */}

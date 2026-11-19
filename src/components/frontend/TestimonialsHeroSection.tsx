@@ -115,7 +115,7 @@ export function TestimonialsHeroSection({ onExploreStories }: TestimonialsHeroSe
             ref={sectionRef}
             id="testimonials-hero"
             aria-labelledby="testimonials-hero-heading"
-            className="relative w-full min-h-[85vh] sm:min-h-[88vh] lg:min-h-[680px] lg:h-[88vh] lg:max-h-[820px] flex items-center overflow-hidden bg-[#F4F0E9] text-[#292722] select-text"
+            className="relative w-full min-h-[85vh] sm:min-h-[88vh] lg:min-h-[780px] flex items-center overflow-hidden bg-[#F4F0E9] text-[#292722] select-text"
         >
             {/* =========================================================================
           SVG DEFINITIONS FOR THE ASYMMETRIC ORGANIC ARCH CURVE
@@ -187,10 +187,10 @@ export function TestimonialsHeroSection({ onExploreStories }: TestimonialsHeroSe
             </div>
 
             {/* =========================================================================
-          MAIN EDITORIAL CONTENT CONTAINER (Left 46% Desktop, Vertically Centered)
+          MAIN EDITORIAL CONTENT CONTAINER (Left 46% Desktop, Comfortably Cleared Below Navbar)
           ========================================================================= */}
-            <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 pt-32 sm:pt-36 md:pt-40 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 flex items-center lg:h-full">
-                <div className="w-full lg:w-[45%] xl:w-[43%] flex flex-col justify-center max-w-[520px] xl:max-w-[560px]">
+            <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 pt-36 sm:pt-40 md:pt-44 lg:pt-36 xl:pt-40 pb-16 sm:pb-20 lg:pb-16 flex items-center lg:min-h-[760px]">
+                <div className="w-full lg:w-[45%] xl:w-[43%] flex flex-col justify-center max-w-[520px] xl:max-w-[560px] pt-4 lg:pt-6">
 
                     {/* Eyebrow: CLIENT STORIES with horizontal line accent */}
                     <div

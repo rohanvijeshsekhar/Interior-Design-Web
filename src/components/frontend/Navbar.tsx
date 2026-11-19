@@ -14,6 +14,7 @@ export function Navbar({ onOpenConsultation, activePage = 'home' }: NavbarProps)
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,6 +24,15 @@ export function Navbar({ onOpenConsultation, activePage = 'home' }: NavbarProps)
         clearTimeout(closeTimerRef.current);
       }
     };
+  }, []);
+
+  // Scroll listener for header elevation
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const closeMenu = useCallback((callback?: () => void) => {
@@ -105,6 +115,7 @@ export function Navbar({ onOpenConsultation, activePage = 'home' }: NavbarProps)
   return (
     <>
       {/* =========================================================================
+          SITE HEADER (Sticky elevation & minimal glass hamburger trigger)
           SITE HEADER (Constant architectural ivory bar with minimal glass trigger)
           ========================================================================= */}
       <header

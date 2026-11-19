@@ -110,7 +110,7 @@ export function ProjectsHeroSection({ onExploreProjects }: ProjectsHeroSectionPr
       ref={sectionRef}
       id="projects-hero"
       aria-labelledby="projects-hero-heading"
-      className="relative w-full min-h-[85vh] sm:min-h-[88vh] lg:min-h-[720px] lg:h-[90vh] lg:max-h-[860px] flex items-center overflow-hidden bg-[#FDF8F0] text-[#292722] select-text"
+      className="relative w-full min-h-[85vh] sm:min-h-[88vh] lg:min-h-[780px] flex items-center overflow-hidden bg-[#FDF8F0] text-[#292722] select-text"
     >
       {/* =========================================================================
           CONTINUOUS ARCHITECTURAL BACKGROUND (NO ZOOM / UNZOOMED NATIVE SCALE)
@@ -170,10 +170,10 @@ export function ProjectsHeroSection({ onExploreProjects }: ProjectsHeroSectionPr
       </div>
 
       {/* =========================================================================
-          MAIN EDITORIAL CONTENT CONTAINER (Left 40–45% of the screen, Vertically Centered)
+          MAIN EDITORIAL CONTENT CONTAINER (Left 40–45% of the screen, Comfortably Cleared Below Navbar)
           ========================================================================= */}
-      <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 pt-32 sm:pt-36 md:pt-40 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 flex items-center lg:h-full">
-        <div className="w-full lg:w-[42%] xl:w-[40%] flex flex-col justify-center max-w-[540px] xl:max-w-[580px]">
+      <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 pt-36 sm:pt-40 md:pt-44 lg:pt-36 xl:pt-40 pb-16 sm:pb-20 lg:pb-16 flex items-center lg:min-h-[760px]">
+        <div className="w-full lg:w-[42%] xl:w-[40%] flex flex-col justify-center max-w-[540px] xl:max-w-[580px] pt-4 lg:pt-6">
 
           {/* Eyebrow: OUR PROJECTS, uppercase, muted terracotta */}
           <span

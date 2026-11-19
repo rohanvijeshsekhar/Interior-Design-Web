@@ -20,6 +20,7 @@ interface HeaderProps {
   enquiries: Enquiry[];
   onSelectEnquiry: (enquiry: Enquiry) => void;
   setActiveTab: (tab: ActiveTab) => void;
+  onSignOut?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,7 +28,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenMobileMenu,
   enquiries,
   onSelectEnquiry,
-  setActiveTab
+  setActiveTab,
+  onSignOut
 }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -173,8 +175,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Studio Settings</span>
               </button>
               <button 
-                onClick={() => setShowProfileMenu(false)}
-                className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-[#777067] dark:text-[#B6AEA1] hover:bg-[#EBE5DA] dark:hover:bg-[#38362F] rounded text-left transition-colors mt-0.5"
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  if (onSignOut) onSignOut();
+                }}
+                className="w-full flex items-center gap-2 px-2.5 py-1.5 text-xs text-[#777067] dark:text-[#B6AEA1] hover:bg-[#EBE5DA] dark:hover:bg-[#38362F] rounded text-left transition-colors mt-0.5 cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 <span>Sign Out</span>

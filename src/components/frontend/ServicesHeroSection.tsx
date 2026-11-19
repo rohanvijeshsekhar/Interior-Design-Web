@@ -125,7 +125,7 @@ export function ServicesHeroSection({
       ref={sectionRef}
       id="services-hero"
       aria-labelledby="services-hero-heading"
-      className="relative w-full min-h-[85vh] sm:min-h-[88vh] lg:min-h-[720px] lg:h-[90vh] lg:max-h-[860px] flex items-center justify-center overflow-hidden bg-[#F5F0E8] text-[#292722] select-text"
+      className="relative w-full min-h-[85vh] sm:min-h-[88vh] lg:min-h-[780px] flex items-center justify-center overflow-hidden bg-[#F5F0E8] text-[#292722] select-text"
     >
       {/* =========================================================================
           MOBILE / TABLET LOW-DENSITY WATERMARK BACKGROUND IMAGE
@@ -175,10 +175,10 @@ export function ServicesHeroSection({
       </div>
 
       {/* =========================================================================
-          MAIN EDITORIAL CONTENT CONTAINER (Desktop 45% Left Section, Vertically Centered)
+          MAIN EDITORIAL CONTENT CONTAINER (Desktop 45% Left Section, Comfortably Cleared Below Navbar)
           ========================================================================= */}
-      <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 pt-32 sm:pt-36 md:pt-40 lg:pt-0 pb-16 sm:pb-20 lg:pb-0 flex items-center lg:h-full">
-        <div className="w-full lg:w-[45%] xl:w-[43%] flex flex-col justify-center max-w-[540px] xl:max-w-[580px]">
+      <div className="relative z-10 w-full max-w-[1520px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-16 pt-36 sm:pt-40 md:pt-44 lg:pt-36 xl:pt-40 pb-16 sm:pb-20 lg:pb-16 flex items-center lg:min-h-[760px]">
+        <div className="w-full lg:w-[45%] xl:w-[43%] flex flex-col justify-center max-w-[540px] xl:max-w-[580px] pt-4 lg:pt-6">
           
           {/* Eyebrow Label */}
           <span 
